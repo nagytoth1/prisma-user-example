@@ -16,5 +16,5 @@ COPY . .
 # generate Prisma client
 RUN npx prisma generate
 
-# push database to defined mysql server
+# push database to defined mysql server and start the backend
 ENTRYPOINT [ "/bin/sh", "-c", "npx prisma db push && npm run start-prod" ]
