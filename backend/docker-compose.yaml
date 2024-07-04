@@ -1,0 +1,28 @@
+services:
+  backend:
+    container_name: backend-container
+    build: .
+    depends_on: # dependency order: mysql starts BEFORE backend
+      - mysqldb
+    environment:
+      - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
+    ports:
+      - 3000:3000
+    networks:
+      - customnet
+  mysqldb:
+    container_name: mysql-container
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - ~/mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - customnet
+networks:
+  customnet:
