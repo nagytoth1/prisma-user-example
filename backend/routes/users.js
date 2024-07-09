@@ -26,16 +26,25 @@ router.get("/filter", async (req, res) => {
     };
   } else {
     // if none of these are defined
-    const foundUser = await prisma.user.findMany();
+    try {
+      const foundUser = await prisma.user.findMany();
+      res.status(200).json(foundUser);
+    } catch (error) {
+      res.status(500).json({ message: error });
+    } finally {
+      return;
+    }
+  }
+  try {
+    const foundUser = await prisma.user.findFirst(filter);
+    if (foundUser === null) {
+      res.status(400).json({ message: "User does not exist in the table" });
+      return;
+    }
     res.status(200).json(foundUser);
-    return;
+  } catch (error) {
+    res.status(500).json({ message: error });
   }
-  const foundUser = await prisma.user.findFirst(filter);
-  if (foundUser === null) {
-    res.status(400).json({ message: "User does not exist in the table" });
-    return;
-  }
-  res.status(200).json(foundUser);
 });
 
 /**
@@ -44,10 +53,14 @@ router.get("/filter", async (req, res) => {
 router.post("/", async (req, res) => {
   console.debug(req.body);
   const { name, email } = req.body;
-  const newUser = await prisma.user.create({
-    data: { name, email },
-  });
-  res.status(200).json(newUser);
+  try {
+    const newUser = await prisma.user.create({
+      data: { name, email },
+    });
+    res.status(200).json(newUser);
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
 });
 
 /**
@@ -56,14 +69,18 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { name, email } = req.body;
   const userID = req.params.id;
-  const foundUser = await prisma.user.findFirst({
-    where: { id: parseInt(userID) },
-  });
-  const updatedUser = await prisma.user.update({
-    data: { name: name || foundUser.name, email: email || foundUser.email },
-    where: { id: parseInt(userID) },
-  });
-  res.status(200).json(updatedUser);
+  try {
+    const foundUser = await prisma.user.findFirst({
+      where: { id: parseInt(userID) },
+    });
+    const updatedUser = await prisma.user.update({
+      data: { name: name || foundUser.name, email: email || foundUser.email },
+      where: { id: parseInt(userID) },
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
 });
 
 /**
@@ -77,7 +94,7 @@ router.delete("/:id", async (req, res) => {
     });
     res.status(200).json(deletedUser);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
