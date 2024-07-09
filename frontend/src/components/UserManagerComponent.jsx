@@ -8,21 +8,21 @@ function UserManagerComponent(properties) {
   const [emailInput, setEmailInput] = useState("");
 
   const fetchUsers = async () => {
-    const response = await axios.get(`http://${BACKEND_URL}/users/filter`);
+    const response = await axios.get(`${BACKEND_URL}/users/filter`);
     console.debug(response.data);
     setUsers(response.data);
   };
 
   const deleteUser = async (userID) => {
     const response = await axios.delete(
-      `http://${BACKEND_URL}/users/${userID}`
+      `${BACKEND_URL}/users/${userID}`
     );
     console.debug(response.data);
     fetchUsers();
   };
 
   const createUser = async () => {
-    const response = await axios.post(`http://${BACKEND_URL}/users`, {
+    const response = await axios.post(`${BACKEND_URL}/users`, {
       name: usernameInput,
       email: emailInput,
     });
@@ -30,7 +30,7 @@ function UserManagerComponent(properties) {
   };
 
   const updateUser = async (userID) => {
-    const response = await axios.put(`http://${BACKEND_URL}/users/${userID}`, {
+    const response = await axios.put(`${BACKEND_URL}/users/${userID}`, {
       name: usernameInput,
       email: emailInput,
     });

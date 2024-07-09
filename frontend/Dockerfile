@@ -12,4 +12,4 @@ RUN npm i -g serve
 COPY . .
 
 # build and start the frontend
-ENTRYPOINT [ "/bin/sh", "-c", "npm run build && serve -s dist" ]
+ENTRYPOINT [ "/bin/sh", "-c", "npm run build && serve -s dist -l ${FRONTEND_PORT}" ]

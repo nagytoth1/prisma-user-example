@@ -19,12 +19,14 @@ services:
       MYSQL_PASSWORD: mypassword
     volumes: # Mounting the host directory ~/mysql_data to /var/lib/mysql in the container (otherwise when container was removed, normally /var/lib/mysql would be removed as well -> data loss)
       - ~/mysql_data:/var/lib/mysql
-    ports:
-      - 3306:3306 # Forwards port 3306 on the host side to the same port in the container
   frontend:
     container_name: frontend-container
     build: frontend
+    depends_on:
+      - backend
     environment:
-      - VITE_BACKEND_URL=backend:3000
+      # this should be localhost, since the frontend is running in the browser, so we need to reach backend with the 
+      - VITE_BACKEND_URL=http://localhost:3000
+      - FRONTEND_PORT=3001
     ports:
       - 3001:3001
