@@ -1,5 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import crypto from "crypto";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -52,12 +53,16 @@ router.get("/filter", async (req, res) => {
  */
 router.post("/", async (req, res) => {
   console.debug(req.body);
-  const { name, email } = req.body;
+  const { name, email, password } = req.body;
+  const hashedPassword = crypto
+    .createHash("sha256")
+    .update(password)
+    .digest("hex");
   try {
-    const newUser = await prisma.user.create({
-      data: { name, email },
+    const createdUser = await prisma.user.create({
+      data: { name, email, password: hashedPassword },
     });
-    res.status(200).json(newUser);
+    res.status(200).json(createdUser);
   } catch (error) {
     res.status(500).json({ message: error });
   }
