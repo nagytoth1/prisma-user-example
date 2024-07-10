@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function UserManagerComponent(properties) {
-  const BACKEND_URL = properties.backend;
+function AdminPage(properties) {
+  const { BACKEND_URL } = properties;
   const [users, setUsers] = useState([]);
   const [usernameInput, setUsernameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
@@ -14,9 +14,7 @@ function UserManagerComponent(properties) {
   };
 
   const deleteUser = async (userID) => {
-    const response = await axios.delete(
-      `${BACKEND_URL}/users/${userID}`
-    );
+    const response = await axios.delete(`${BACKEND_URL}/users/${userID}`);
     console.debug(response.data);
     fetchUsers();
   };
@@ -26,6 +24,7 @@ function UserManagerComponent(properties) {
       name: usernameInput,
       email: emailInput,
     });
+    console.debug("user created response", response);
     fetchUsers();
   };
 
@@ -112,4 +111,4 @@ function UserManagerComponent(properties) {
   );
 }
 
-export default UserManagerComponent;
+export default AdminPage;
