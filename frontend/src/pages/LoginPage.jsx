@@ -4,7 +4,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const authenticator = useAuth();
-  const handleSubmitEvent = (e) => {
+  const handleLogin = (e) => {
     // prevent the default behaviour of a component
     // Prevent a submit button from submitting a form
     // We normally prevent submit behaviour to check some validation before submitting the form
@@ -29,7 +29,7 @@ const LoginPage = () => {
   };
 
   return (
-    <form onSubmit={handleSubmitEvent}>
+    <form onSubmit={handleLogin}>
       <div>
         <label htmlFor="username-input">Username:</label>
         <input
@@ -63,7 +63,7 @@ const LoginPage = () => {
           your password should be more than 6 character
         </div>
       </div>
-      <button className="login-button">Login</button>
+      <input type="submit" className="login-button">Login</input>
     </form>
   );
 };

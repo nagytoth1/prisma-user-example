@@ -1,7 +1,7 @@
 import AdminPage from "./pages/AdminPage.jsx";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import LoginGuard from "./components/LoginGuard.jsx";
-import AuthProvider from "./hooks/AuthProvider.jsx";
+import { AuthProvider } from "./hooks/AuthProvider.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import { ROUTES } from "./routes.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";

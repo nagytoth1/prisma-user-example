@@ -22,7 +22,13 @@ router.post("/login", async (req, res) => {
     });
 
     if (user) {
-      res.status(200).json({ message: "Login successful", token: "alma" });
+      res
+        .status(200)
+        .json({
+          message: "Login successful",
+          token: "alma",
+          user: { email: "abc123@test.com" },
+        });
     } else {
       res
         .status(401)
