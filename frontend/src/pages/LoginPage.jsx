@@ -63,7 +63,7 @@ const LoginPage = () => {
           your password should be more than 6 character
         </div>
       </div>
-      <input type="submit" className="login-button">Login</input>
+      <input type="submit" className="login-button" value="Login"/>
     </form>
   );
 };
