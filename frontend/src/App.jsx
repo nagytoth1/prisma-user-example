@@ -1,5 +1,5 @@
 import AdminPage from "./pages/AdminPage.jsx";
-import { Route, BrowserRouter, Routes } from "react-router-dom";
+import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
 import LoginGuard from "./components/LoginGuard.jsx";
 import { AuthProvider } from "./hooks/AuthProvider.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -15,6 +15,8 @@ function App() {
           <Routes>
             {/* define which page should reload on /login */}
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+            {/* redirection from root to login */}
+            <Route exact path="/" element={<Navigate to={ROUTES.LOGIN} />} />
             <Route element={<LoginGuard />}>
               {/* user manager route protected by*/}
               <Route
