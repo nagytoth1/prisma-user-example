@@ -13,7 +13,7 @@ pipeline {
         stage('Cloning Git repo') {
             steps {
                 // Cloning from Gitlab
-                git branch:'main' url: 'git@gitlabe1.ext.net.nokia.com:ntas-summer-program-2024/users-example-app.git', credentialsId: 'jenkins-key-nagytoth-wsl'
+                git branch:'main', url: 'git@gitlabe1.ext.net.nokia.com:ntas-summer-program-2024/users-example-app.git', credentialsId: 'jenkins-key-nagytoth-wsl'
             }
         }
         
