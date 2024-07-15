@@ -25,8 +25,7 @@ services:
     depends_on:
       - backend
     environment:
-      # this should be localhost, since the frontend is running in the browser, so we need to reach backend with the 
+      # this should be localhost, since the frontend is running in the browser, so we need to reach backend with the
       - VITE_BACKEND_URL=http://localhost:3000
-      - FRONTEND_PORT=3001
     ports:
-      - 3001:3001
+      - 80:80
