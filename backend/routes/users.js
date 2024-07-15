@@ -1,6 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
+import { validateRequest } from "./auth";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -11,7 +12,7 @@ const router = express.Router();
  * If the query parameter "email" is set, then the filter is defined by the user's email address.
  * If none defined, then there is no filter, all of the users can be retrieved.
  */
-router.get("/filter", async (req, res) => {
+router.get("/filter", validateRequest, async (req, res) => {
   const userID = req.query.id;
   const userEmail = req.query.email;
   let filter;
