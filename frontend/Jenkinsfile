@@ -2,68 +2,54 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'production'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-key-nagytoth')
-        DOCKER_REGISTRY = 'docker.io'
-        DOCKER_REPOSITORY = 'nagytoth/react-jenkins-example'
-        DOCKER_IMAGE_TAG = 'latest'
+        CONTAINER_NAME="example-frontend-container"
+        LOCAL_IMAGE_NAME="exampleimage/${BUILD_TAG}"
     }
 
     stages {
-        stage('Cloning Git repo') {
-            steps {
-                // Cloning from Gitlab
-                git branch:'main', url: 'git@gitlabe1.ext.net.nokia.com:ntas-summer-program-2024/users-example-app.git', credentialsId: 'jenkins-key-nagytoth-wsl'
-            }
+        stage('Initialize'){
+            echo "Container name: ${env.CONTAINER_NAME}"
+			echo "Local image name: ${env.LOCAL_IMAGE_NAME}"
+			echo "Git branch: ${env.BRANCH_NAME}"
         }
-        
-        // stage('Install Dependencies') {
-        //     steps {
-        //         // Install npm dependencies
-        //         sh 'npm install --omit dev'
-        //     }
-        // }
-        
-        // stage('Build') {
-        //     steps {
-        //         sh 'npm install'
-        //     }
-        // }
+
+        stage('Compile frontend') {
+            steps {
+                nodejs(nodeJSInstallationName: 'node') {
+                    sh 'npm --version'
+                    sh 'npm install && CI=false npm run build'
+                }
+            }
+        }        
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image
-                    sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG} ."
+                    echo "Building image with local ID ${env.LOCAL_IMAGE_NAME}:latest"
+                    def dockerImage = docker.build("${env.LOCAL_IMAGE_NAME}:latest")            
                 }
             }
         }
 
-        stage('Push Docker Image') {
-            agent any
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                sh 'docker push shanem/spring-petclinic:latest'
-                }
-            }
-        }
+        // stage('Push docker image'){
+        //     steps{
+        //         script{
+        //             docker.push()
+        //         }
+        //     }
+        // }
 
         // stage('Cleanup'){
-        //     sh "docker rmi -f ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+        //     sh "docker rmi -f ${env.LOCAL_IMAGE_NAME}:latest"
         // }
     }
 
     post {
-        // always {
-        //     // Clean up Docker images to save space on Jenkins agent
-        //     sh 'docker system prune -f'
-        // }
         success {
-            echo 'Build and deploy succeeded!'
+            echo 'Pipeline completed!'
         }
         failure {
-            echo 'Build or deploy failed.'
+            echo 'Pipeline failed.'
         }
     }
 }
