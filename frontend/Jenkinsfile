@@ -8,9 +8,11 @@ pipeline {
 
     stages {
         stage('Initialize'){
-            echo "Container name: ${env.CONTAINER_NAME}"
-			echo "Local image name: ${env.LOCAL_IMAGE_NAME}"
-			echo "Git branch: ${env.BRANCH_NAME}"
+            steps{
+                echo "Container name: ${env.CONTAINER_NAME}"
+                echo "Local image name: ${env.LOCAL_IMAGE_NAME}"
+                echo "Git branch: ${env.BRANCH_NAME}"
+            }
         }
 
         stage('Compile frontend') {
