@@ -4,6 +4,7 @@ pipeline {
     environment {
         CONTAINER_NAME="pue-frontend-container"
         LOCAL_IMAGE_NAME="pue-frontend/${BUILD_TAG}"
+        BRANCH_NAME="main"
     }
 
     stages {
