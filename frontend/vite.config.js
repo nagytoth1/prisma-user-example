@@ -8,4 +8,12 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 3001,
   },
+  // development, no deploy!
+  // build: {
+  //   // build to the backend's dist directory because the backend will serve it for us
+  //   outDir: "../backend/dist",
+  // },
+  build:{
+    
+  }
 });

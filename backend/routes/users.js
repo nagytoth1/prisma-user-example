@@ -1,7 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
-import { validateRequest } from "./auth";
+import { validateRequest } from "./auth.js";
 
 const prisma = new PrismaClient();
 const router = express.Router();

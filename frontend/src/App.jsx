@@ -5,7 +5,8 @@ import { AuthProvider } from "./hooks/AuthProvider.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import { ROUTES } from "./routes.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "localhost:3000";
+const BACKEND_PORT = import.meta.env.VITE_BACKEND_URL || 3000;
+const BACKEND_URL = `${location.host}:${BACKEND_PORT}`;
 function App() {
   return (
     <div className="app">

@@ -1,14 +1,4 @@
 services:
-  backend: # backend/API service
-    container_name: backend-container
-    build: backend # Builds the container from the Dockerfile in the current directory
-    depends_on: # dependency order: mysqldb should start BEFORE backend
-      - mysqldb
-    environment: # define environment variables
-      - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
-      - BACKEND_PORT=3000
-    ports:
-      - 3000:3000 # Forwards port 3000 on the host side to the same port in the container
   mysqldb: # database service
     container_name: mysql-container
     image: mysql:5.7
@@ -19,14 +9,13 @@ services:
       MYSQL_PASSWORD: mypassword
     volumes: # Mounting the host directory ~/mysql_data to /var/lib/mysql in the container (otherwise when container was removed, normally /var/lib/mysql would be removed as well -> data loss)
       - ~/mysql_data:/var/lib/mysql
-  frontend:
-    container_name: frontend-container
-    build: frontend
-    depends_on:
-      - backend
-    environment:
-      # this should be localhost, since the frontend is running in the browser, so we need to reach backend with the
-      # todo: would it be set in npm run build?
-      - VITE_BACKEND_URL=http://localhost:3000
+  users-app: # backend/API service + frontend static file hosting
+    container_name: users-app-container
+    build: .
+    depends_on: # dependency order: mysqldb should start BEFORE backend
+      - mysqldb
+    environment: # define environment variables
+      - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
+      - BACKEND_PORT=3000
     ports:
-      - 80:80
+      - 3000:3000
