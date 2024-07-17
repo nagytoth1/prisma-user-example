@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        CONTAINER_NAME="example-frontend-container"
-        LOCAL_IMAGE_NAME="exampleimage/${BUILD_TAG}"
+        CONTAINER_NAME="pue-frontend-container"
+        LOCAL_IMAGE_NAME="pue-frontend/${BUILD_TAG}"
     }
 
     stages {
@@ -12,15 +12,6 @@ pipeline {
 			echo "Local image name: ${env.LOCAL_IMAGE_NAME}"
 			echo "Git branch: ${env.BRANCH_NAME}"
         }
-
-
-        stage('Cloning Git repo') {
-            steps {
-                // Cloning from Gitlab
-                git branch:'main', url: 'git@gitlabe1.ext.net.nokia.com:ntas-summer-program-2024/users-example-app.git', credentialsId: 'jenkins-key-nagytoth-wsl'
-            }
-        }
-
 
         stage('Compile frontend') {
             steps {
