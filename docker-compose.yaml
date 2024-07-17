@@ -26,6 +26,7 @@ services:
       - backend
     environment:
       # this should be localhost, since the frontend is running in the browser, so we need to reach backend with the
+      # todo: would it be set in npm run build?
       - VITE_BACKEND_URL=http://localhost:3000
     ports:
       - 80:80
