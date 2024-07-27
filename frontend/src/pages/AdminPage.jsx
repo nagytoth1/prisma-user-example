@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../hooks/AuthProvider";
 
 function AdminPage(properties) {
   const { backend } = properties;
   const [users, setUsers] = useState([]);
   const [usernameInput, setUsernameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
-
+  const auth = useAuth();
   const fetchUsers = async () => {
     await axios
       .get(`${backend}/users/filter`)
@@ -97,7 +98,7 @@ function AdminPage(properties) {
     fetchUsers();
   }, []);
 
-  return (
+  return !auth.token ? null : (
     <div className="container">
       <table className="my-3 table table-light">
         <thead>

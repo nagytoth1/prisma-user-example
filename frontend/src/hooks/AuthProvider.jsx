@@ -25,19 +25,11 @@ const AuthProvider = (properties) => {
   const loginAction = async (data) => {
     try {
       // we need /auth/login endpoint
-      await axios
-        .post(`${backend}/auth/login`, data, { withCredentials: true })
-        .then((res) => {
-          console.debug(res.data.user);
-          setUser(res.data.user);
-          navigate(ROUTES.ADMIN);
-        });
-      // if (response.data) {
-      //   // setToken(token);
-      //   // usermanager?
-      //   return;
-      // }
-      // throw new Error(response.message);
+      const res = await axios.post(`${backend}/auth/login`, data, {
+        withCredentials: true,
+      });
+      setUser(res.data.user);
+      navigate(ROUTES.ADMIN);
     } catch (error) {
       console.error(error);
     }
@@ -47,6 +39,7 @@ const AuthProvider = (properties) => {
     setUser(null);
     removeCookies("auth_token", { path: "/", domain: "localhost" });
     console.debug("logout successfully");
+    navigate(ROUTES.LOGIN);
   };
 
   return (

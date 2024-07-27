@@ -3,7 +3,7 @@ import { useAuth } from "../hooks/AuthProvider";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const authenticator = useAuth();
+  const auth = useAuth();
   const handleLogin = (e) => {
     // prevent the default behaviour of a component
     // Prevent a submit button from submitting a form
@@ -13,7 +13,7 @@ const LoginPage = () => {
     if (username === "" || password === "") {
       alert("Please provide your username and password!");
     }
-    authenticator.loginAction({ username, password });
+    auth.loginAction({ username, password });
   };
 
   // set the username from the input text field
@@ -28,7 +28,7 @@ const LoginPage = () => {
     setPassword(passwordInput);
   };
 
-  return (
+  return !auth.token ? (
     <div className="container my-3">
       <h5>Please, log in to continue</h5>
       <form onSubmit={handleLogin} className="form-group">
@@ -71,7 +71,7 @@ const LoginPage = () => {
         <input type="submit" className="btn btn-primary mt-3" value="Login" />
       </form>
     </div>
-  );
+  ) : null;
 };
 
 export default LoginPage;

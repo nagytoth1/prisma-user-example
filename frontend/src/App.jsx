@@ -1,6 +1,5 @@
 import AdminPage from "./pages/AdminPage.jsx";
 import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
-import LoginGuard from "./components/LoginGuard.jsx";
 import { AuthProvider } from "./hooks/AuthProvider.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import { ROUTES } from "./routes.jsx";
@@ -24,13 +23,10 @@ function App() {
               path={ROUTES.HOME}
               element={<Navigate to={ROUTES.ADMIN} />}
             />
-            <Route element={<LoginGuard />}>
-              {/* user manager route protected by*/}
-              <Route
-                path={ROUTES.ADMIN}
-                element={<AdminPage backend={BACKEND_URL} />}
-              />
-            </Route>
+            <Route
+              path={ROUTES.ADMIN}
+              element={<AdminPage backend={BACKEND_URL} />}
+            />
             <Route path="*" element={<NotFoundPage />} />
             {/* Other routes */}
           </Routes>
