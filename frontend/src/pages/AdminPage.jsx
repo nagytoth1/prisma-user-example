@@ -98,22 +98,21 @@ function AdminPage(properties) {
   }, []);
 
   return (
-    <>
-      <table>
+    <div className="container">
+      <table className="my-3 table table-light">
         <thead>
           <tr>
-            <th>UserID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th></th>
-            <th></th>
+            <th scope="col">ID</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => {
             return (
               <tr key={user.id}>
-                <td>{user.id}</td>
+                <th scope="row">{user.id}</th>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
@@ -121,15 +120,15 @@ function AdminPage(properties) {
                     onClick={() => {
                       updateUser(user.id);
                     }}
+                    className="mx-3 btn btn-warning"
                   >
                     Update
                   </button>
-                </td>
-                <td>
                   <button
                     onClick={() => {
                       deleteUser(user.id);
                     }}
+                    className="btn btn-danger"
                   >
                     Delete
                   </button>
@@ -139,30 +138,40 @@ function AdminPage(properties) {
           })}
         </tbody>
       </table>
-      <label htmlFor="username">Username:</label>
-      <input
-        type="text"
-        name="username"
-        id="username"
-        value={usernameInput}
-        onChange={(e) => setUsernameInput(e.target.value)}
-      />
-      <label htmlFor="email">Email:</label>
-      <input
-        type="text"
-        name="email"
-        id="email"
-        value={emailInput}
-        onChange={(e) => setEmailInput(e.target.value)}
-      />
-      <button
-        onClick={() => {
-          createUser();
-        }}
-      >
-        Create
-      </button>
-    </>
+      <form className="form-inline my-4">
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            value={usernameInput}
+            onChange={(e) => setUsernameInput(e.target.value)}
+            className="form-control mx-2"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="text"
+            name="email"
+            id="email"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            className="form-control mx-2"
+          />
+          <button
+            onClick={() => {
+              createUser();
+            }}
+            className="btn btn-success"
+            type="submit"
+          >
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

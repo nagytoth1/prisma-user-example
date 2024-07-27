@@ -12,14 +12,17 @@ services:
     ports:
       - 3306:3306
     restart: always
-  # users-app: # backend/API service + frontend static file hosting
-  #   container_name: users-app-container
-  #   image: pue-app:5
-  #   depends_on: # dependency order: mysqldb should start BEFORE backend
-  #     - mysqldb
-  #   environment: # define environment variables
-  #     - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
-  #     - BACKEND_PORT=3000
-  #   ports:
-  #     - 3000:3000
-  #   restart: always
+  users-app: # backend/API service + frontend static file hosting
+    container_name: users-app-container
+    image: pue-app:9
+    depends_on: # dependency order: mysqldb should start BEFORE backend
+      - mysqldb
+    environment: # define environment variables
+      - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
+      - BACKEND_PORT=3000
+      - JWT_SECRET="jSI4ldmUR0Wag9MEJlmbSpqslrfT8NquO7sxmVVc4URR95o52wHyyduZMkLz3wojiH6+99LZyg24vTkPFKZm4Z2/tNceJmCD7F24exW+WgqIMtRqwc3Cdwt39+Yh6DHLAHyJ73loJ/4V8AHpvSPKWh8fO9fLxdKh0XIXOQC+KIIC20Kjgs5EncfYfO41yac2XZk7ERwq3gbCVnm4g9irwUxWFWhUpFwgXJeGHsdOrnE9bipBVPAKHjo/Bt432h4OVEKMJ8KCLJuzXISAMgrrUImeRyag31KKUACDdjXAkGut/fS0noj9jQqZjJYZSUsUaDWqBaNNlN10v/B71g9FfA=="
+      - DEFAULT_USER=root
+      - DEFAULT_PASSWORD=root
+    ports:
+      - 3000:3000
+    restart: always

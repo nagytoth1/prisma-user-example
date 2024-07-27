@@ -1,1 +1,1 @@
-export const ROUTES = { ADMIN: "/admin", LOGIN: "/login" };
+export const ROUTES = { ADMIN: "/admin", LOGIN: "/login", HOME: "/" };

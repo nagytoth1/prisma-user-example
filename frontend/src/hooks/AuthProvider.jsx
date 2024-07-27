@@ -15,7 +15,7 @@ const AuthenticationContext = createContext();
 const AuthProvider = (properties) => {
   const { children, backend } = properties;
   const [user, setUser] = useState(null);
-  const [cookies, removeCookies] = useCookies(["auth_token"]);
+  const [cookies, setCookie, removeCookies] = useCookies(["auth_token"]);
   const navigate = useNavigate();
 
   //The login function handles user login by sending a POST request
@@ -45,8 +45,8 @@ const AuthProvider = (properties) => {
 
   const logout = () => {
     setUser(null);
-    removeCookies();
-    navigate(ROUTES.LOGIN);
+    removeCookies("auth_token", { path: "/", domain: "localhost" });
+    console.debug("logout successfully");
   };
 
   return (

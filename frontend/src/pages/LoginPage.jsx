@@ -29,42 +29,48 @@ const LoginPage = () => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label htmlFor="username-input">Username:</label>
-        <input
-          type="text"
-          id="username-input"
-          name="username"
-          required={true}
-          autoComplete="true"
-          placeholder="abc123"
-          aria-describedby="username"
-          aria-invalid="false"
-          onChange={handleUsernameInput}
-        />
-        <div id="username-input-description">
-          Please enter a valid username. It must contain at least 6 characters.
+    <div className="container my-3">
+      <h5>Please, log in to continue</h5>
+      <form onSubmit={handleLogin} className="form-group">
+        <div>
+          <label htmlFor="username-input">Username:</label>
+          <input
+            className="form-control"
+            type="text"
+            id="username-input"
+            name="username"
+            required={true}
+            autoComplete="true"
+            placeholder="abc123"
+            aria-describedby="username"
+            aria-invalid="false"
+            onChange={handleUsernameInput}
+          />
+          <div id="username-input-description">
+            Please enter a valid username. It must contain at least 6
+            characters.
+          </div>
         </div>
-      </div>
-      <div>
-        <label htmlFor="password-input">Password:</label>
-        <input
-          type="password"
-          id="password-input"
-          name="password"
-          required={true}
-          autoComplete="true"
-          aria-describedby="password"
-          aria-invalid="false"
-          onChange={handlePasswordInput}
-        />
-        <div id="password-input-description">
-          your password should be more than 6 character
+        <div>
+          <label htmlFor="password-input">Password:</label>
+          <input
+            className="form-control"
+            type="password"
+            id="password-input"
+            name="password"
+            required={true}
+            autoComplete="true"
+            aria-describedby="password"
+            aria-invalid="false"
+            onChange={handlePasswordInput}
+          />
+          <div id="password-input-description">
+            Your password should be more than 6 character
+          </div>
         </div>
-      </div>
-      <input type="submit" className="login-button" value="Login"/>
-    </form>
+        <input type="submit" className="btn btn-primary mt-3" value="Login" />
+      </form>
+    </div>
   );
 };
 
