@@ -2,13 +2,36 @@ import express, { json } from "express";
 import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
 import jsonwebtoken from "jsonwebtoken";
+import { configDotenv } from "dotenv";
 
+configDotenv();
 const prisma = new PrismaClient();
 const router = express.Router();
-const ACCESS_TOKEN = process.env.ACCESS_TOKEN || "";
+const JWT_SECRET = process.env.JWT_SECRET || "";
+const DEFAULT_USER = process.env.DEFAULT_USER || "root";
+const DEFAULT_PASSWORD = process.env.DEFAULT_PASSWORD || "root";
 
 router.post("/login", async (req, res) => {
-  const { name, password } = req.body;
+  const { username, password } = req.body;
+  if (username === DEFAULT_USER && password === DEFAULT_PASSWORD) {
+    console.debug("using default user to add more users");
+    let generatedToken;
+    try {
+      generatedToken = jsonwebtoken.sign(username, JWT_SECRET);
+    } catch (error) {
+      console.debug(error.message);
+      return;
+    }
+    res.cookie("auth_token", generatedToken);
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        name: "Default User",
+        email: "test@test.com",
+      },
+    });
+    return;
+  }
   // hash password
   const hashedPassword = crypto
     .createHash("sha256")
@@ -16,7 +39,7 @@ router.post("/login", async (req, res) => {
     .digest("hex");
   // if a user exists in a table with these credentials (username + hashedPassword)
   try {
-    const foundUser = await getUserFromDatabase(name, hashedPassword);
+    const foundUser = await getUserFromDatabase(username, hashedPassword);
 
     if (!foundUser) {
       res
@@ -25,7 +48,7 @@ router.post("/login", async (req, res) => {
       return;
     }
     // if the user exists in the database with given input credentials
-    const generatedToken = jsonwebtoken.sign(name, ACCESS_TOKEN);
+    const generatedToken = jsonwebtoken.sign(username, JWT_SECRET);
     // let the user attach the token to every request to make sure every endpoint is called from a logged in user
     res.cookie("token", generatedToken);
     res.status(200).json({
@@ -65,7 +88,7 @@ export async function validateRequest(req, res, next) {
   const { token } = req.cookies;
   if (!token) return res.sendStatus(401); // Unauthorized if no token is present
   // token from the client, ACCESS_TOKEN from the server, and check for the payload (username) identifying a user
-  jsonwebtoken.verify(token, ACCESS_TOKEN, async (error, name) => {
+  jsonwebtoken.verify(token, JWT_SECRET, async (error, name) => {
     if (error) {
       res.sendStatus(403);
       return;

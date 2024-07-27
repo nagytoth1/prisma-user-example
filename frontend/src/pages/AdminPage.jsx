@@ -2,38 +2,93 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function AdminPage(properties) {
-  const { BACKEND_URL } = properties;
+  const { backend } = properties;
   const [users, setUsers] = useState([]);
   const [usernameInput, setUsernameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
 
   const fetchUsers = async () => {
-    const response = await axios.get(`${BACKEND_URL}/users/filter`);
-    console.debug(response.data);
-    setUsers(response.data);
+    await axios
+      .get(`${backend}/users/filter`)
+      .then((res) => {
+        setUsers(res.data); // Assuming setUsers is defined in your component state
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.debug("Error Response Data:", err.response.data.message);
+        } else if (err.request) {
+          // The request was made but no response was received
+          console.debug("Error Request:", err.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.debug("Error Message:", err.message);
+        }
+      });
   };
 
   const deleteUser = async (userID) => {
-    const response = await axios.delete(`${BACKEND_URL}/users/${userID}`);
-    console.debug(response.data);
+    await axios
+      .delete(`${backend}/users/${userID}`)
+      .then((res) => {
+        console.debug(res.data);
+      })
+      .catch((err) => {
+        if (err.response) {
+          alert(`Error while creating user: ${err.response.data.message}`);
+        } else if (err.request) {
+          // The request was made but no response was received
+          console.debug("Error Request:", err.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.debug("Error Message:", err.message);
+        }
+      });
     fetchUsers();
   };
 
   const createUser = async () => {
-    const response = await axios.post(`${BACKEND_URL}/users`, {
-      name: usernameInput,
-      email: emailInput,
-    });
-    console.debug("user created response", response);
+    await axios
+      .post(`${backend}/users`, {
+        name: usernameInput,
+        email: emailInput,
+      })
+      .then((res) => {
+        console.debug(res.data);
+      })
+      .catch((err) => {
+        if (err.response) {
+          alert(`Error while creating user: ${err.response.data.message}`);
+        } else if (err.request) {
+          // The request was made but no response was received
+          console.debug("Error Request:", err.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.debug("Error Message:", err.message);
+        }
+      });
     fetchUsers();
   };
 
   const updateUser = async (userID) => {
-    const response = await axios.put(`${BACKEND_URL}/users/${userID}`, {
-      name: usernameInput,
-      email: emailInput,
-    });
-    alert(response);
+    await axios
+      .put(`${backend}/users/${userID}`, {
+        name: usernameInput,
+        email: emailInput,
+      })
+      .then((res) => {
+        console.debug(res.data);
+      })
+      .catch((err) => {
+        if (err.response) {
+          alert(`Error while creating user: ${err.response.data.message}`);
+        } else if (err.request) {
+          // The request was made but no response was received
+          console.debug("Error Request:", err.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.debug("Error Message:", err.message);
+        }
+      });
     fetchUsers();
   };
 

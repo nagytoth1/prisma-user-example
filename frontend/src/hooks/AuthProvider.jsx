@@ -1,6 +1,7 @@
 import { useState, useContext, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 
 const AuthenticationContext = createContext();
@@ -12,11 +13,9 @@ const AuthenticationContext = createContext();
  * @returns
  */
 const AuthProvider = (properties) => {
-  const { children, BACKEND_URL } = properties;
+  const { children, backend } = properties;
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(
-    localStorage.getItem("authorization_token") || ""
-  );
+  const [cookies, removeCookies] = useCookies(["auth_token"]);
   const navigate = useNavigate();
 
   //The login function handles user login by sending a POST request
@@ -26,21 +25,19 @@ const AuthProvider = (properties) => {
   const loginAction = async (data) => {
     try {
       // we need /auth/login endpoint
-      const responseObject = await axios.post(
-        `${BACKEND_URL}/auth/login`,
-        data
-      );
-      if (responseObject.data) {
-        setUser(responseObject.data.user);
-        // token comes from the API
-        setToken(responseObject.data.token);
-        // set cookie as well for saving state between page reloads
-        localStorage.setItem("site", responseObject.data.token);
-        // usermanager?
-        navigate(ROUTES.ADMIN);
-        return;
-      }
-      throw new Error(responseObject.message);
+      await axios
+        .post(`${backend}/auth/login`, data, { withCredentials: true })
+        .then((res) => {
+          console.debug(res.data.user);
+          setUser(res.data.user);
+          navigate(ROUTES.ADMIN);
+        });
+      // if (response.data) {
+      //   // setToken(token);
+      //   // usermanager?
+      //   return;
+      // }
+      // throw new Error(response.message);
     } catch (error) {
       console.error(error);
     }
@@ -48,14 +45,13 @@ const AuthProvider = (properties) => {
 
   const logout = () => {
     setUser(null);
-    setToken("");
-    localStorage.removeItem("site");
+    removeCookies();
     navigate(ROUTES.LOGIN);
   };
 
   return (
     <AuthenticationContext.Provider
-      value={{ token, user, loginAction, logout }}
+      value={{ token: cookies.auth_token, user: user, loginAction, logout }}
     >
       {children}
     </AuthenticationContext.Provider>

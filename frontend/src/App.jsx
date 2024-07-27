@@ -6,13 +6,13 @@ import LoginPage from "./pages/LoginPage.jsx";
 import { ROUTES } from "./routes.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_URL || 3000;
-const BACKEND_URL = `${location.host}:${BACKEND_PORT}`;
+const BACKEND_URL = `http://${location.hostname}:${BACKEND_PORT}`;
 function App() {
   return (
     <div className="app">
       <BrowserRouter>
         {/* wrap the whole application around AuthProvider */}
-        <AuthProvider BACKEND_URL={BACKEND_URL}>
+        <AuthProvider backend={BACKEND_URL}>
           <Routes>
             {/* define which page should reload on /login */}
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
@@ -22,7 +22,7 @@ function App() {
               {/* user manager route protected by*/}
               <Route
                 path={ROUTES.ADMIN}
-                element={<AdminPage BACKEND_URL={BACKEND_URL} />}
+                element={<AdminPage backend={BACKEND_URL} />}
               />
             </Route>
             <Route path="*" element={<NotFoundPage />} />

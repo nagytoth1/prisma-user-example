@@ -9,13 +9,17 @@ services:
       MYSQL_PASSWORD: mypassword
     volumes: # Mounting the host directory ~/mysql_data to /var/lib/mysql in the container (otherwise when container was removed, normally /var/lib/mysql would be removed as well -> data loss)
       - ~/mysql_data:/var/lib/mysql
-  users-app: # backend/API service + frontend static file hosting
-    container_name: users-app-container
-    build: .
-    depends_on: # dependency order: mysqldb should start BEFORE backend
-      - mysqldb
-    environment: # define environment variables
-      - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
-      - BACKEND_PORT=3000
     ports:
-      - 3000:3000
+      - 3306:3306
+    restart: always
+  # users-app: # backend/API service + frontend static file hosting
+  #   container_name: users-app-container
+  #   image: pue-app:5
+  #   depends_on: # dependency order: mysqldb should start BEFORE backend
+  #     - mysqldb
+  #   environment: # define environment variables
+  #     - DATABASE_URL=mysql://myuser:mypassword@mysqldb:3306/userdb
+  #     - BACKEND_PORT=3000
+  #   ports:
+  #     - 3000:3000
+  #   restart: always
