@@ -139,7 +139,7 @@ function AdminPage(properties) {
           })}
         </tbody>
       </table>
-      <form className="form-inline my-4">
+      <div className="form-inline my-4">
         <div className="form-group">
           <label htmlFor="username">Username:</label>
           <input
@@ -161,17 +161,11 @@ function AdminPage(properties) {
             onChange={(e) => setEmailInput(e.target.value)}
             className="form-control mx-2"
           />
-          <button
-            onClick={() => {
-              createUser();
-            }}
-            className="btn btn-success"
-            type="submit"
-          >
+          <button className="btn btn-success" onClick={createUser}>
             Create
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
