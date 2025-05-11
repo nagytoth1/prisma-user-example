@@ -1,5 +1,5 @@
 # Multi-stage building - Stage 1: building the FRONTEND side
-FROM node:20-alpine3.19 AS builder
+FROM node:22-alpine3.20 AS builder
 
 # change directory/starting point to /app
 WORKDIR /app
@@ -8,12 +8,12 @@ WORKDIR /app
 COPY ["frontend/package.json", "frontend/package-lock.json","./"]
 
 # build the FRONTEND
-RUN npm install 
+RUN npm ci --only=production
 COPY frontend/ .
 RUN npm run build
 
 # Multi-stage building - Stage 2: running the application, BACKEND side
-FROM node:20-alpine3.19
+FROM node:22-alpine3.20
 
 WORKDIR /app
 # when something changes in the other files, it takes less build time to run again
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY ["backend/package.json", "backend/package-lock.json*", "./"]
 
 # install product dependencies only
-RUN npm install --omit dev
+RUN npm ci --only=production
 
 # copy built frontend from 1st stage "builder"
 COPY --from=builder /app/dist ./dist/
