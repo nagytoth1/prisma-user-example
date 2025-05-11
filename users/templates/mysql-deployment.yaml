@@ -1,13 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "users.fullname" . }}-mysql
+  name: mysql
   labels:
     io.kompose.service: mysql
   {{- include "users.labels" . | nindent 4 }}
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
-    kompose.version: 1.35.0 (9532ceef3)
 spec:
   replicas: {{ .Values.mysql.replicas }}
   strategy:
@@ -21,9 +18,6 @@ spec:
       labels:
         io.kompose.service: mysql
       {{- include "users.selectorLabels" . | nindent 8 }}
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
-        kompose.version: 1.35.0 (9532ceef3)
     spec:
       containers:
       - env:
@@ -39,10 +33,30 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.mysql.mysql.image.repository }}:{{ .Values.mysql.mysql.image.tag
           | default .Chart.AppVersion }}
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
         name: mysql
         ports:
         - containerPort: 3306
           protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - mysql
+            - -h
+            - 127.0.0.1
+            - -prootpassword
+            - -e
+            - SELECT 1
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
         resources: {}
         volumeMounts:
         - mountPath: /var/lib/mysql
@@ -51,4 +65,4 @@ spec:
       volumes:
       - name: mysql-data
         persistentVolumeClaim:
-          claimName: {{ include "users.fullname" . }}-mysql-data
+          claimName: mysql-data

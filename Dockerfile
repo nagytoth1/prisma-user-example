@@ -8,7 +8,7 @@ WORKDIR /app
 COPY ["frontend/package.json", "frontend/package-lock.json","./"]
 
 # build the FRONTEND
-RUN npm ci --only=production
+RUN npm ci
 COPY frontend/ .
 RUN npm run build
 
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY ["backend/package.json", "backend/package-lock.json*", "./"]
 
 # install product dependencies only
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # copy built frontend from 1st stage "builder"
 COPY --from=builder /app/dist ./dist/

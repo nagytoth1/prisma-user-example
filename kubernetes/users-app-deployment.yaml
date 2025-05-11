@@ -1,9 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
-    kompose.version: 1.35.0 (9532ceef3)
   labels:
     io.kompose.service: users-app
   name: users-app
@@ -14,9 +11,6 @@ spec:
       io.kompose.service: users-app
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
-        kompose.version: 1.35.0 (9532ceef3)
       labels:
         io.kompose.service: users-app
     spec:
@@ -31,10 +25,26 @@ spec:
             - name: DEFAULT_USER
               value: root
             - name: JWT_SECRET
-              value: '"jSI4ldmUR0Wag9MEJlmbSpqslrfT8NquO7sxmVVc4URR95o52wHyyduZMkLz3wojiH6+99LZyg24vTkPFKZm4Z2/tNceJmCD7F24exW+WgqIMtRqwc3Cdwt39+Yh6DHLAHyJ73loJ/4V8AHpvSPKWh8fO9fLxdKh0XIXOQC+KIIC20Kjgs5EncfYfO41yac2XZk7ERwq3gbCVnm4g9irwUxWFWhUpFwgXJeGHsdOrnE9bipBVPAKHjo/Bt432h4OVEKMJ8KCLJuzXISAMgrrUImeRyag31KKUACDdjXAkGut/fS0noj9jQqZjJYZSUsUaDWqBaNNlN10v/B71g9FfA=="'
-          image: users-app:latest
+              value: "jSI4ldmUR0Wag9MEJlmbSpqslrfT8NquO7sxmVVc4URR95o52wHyyduZMkLz3wojiH6+99LZyg24vTkPFKZm4Z2/tNceJmCD7F24exW+WgqIMtRqwc3Cdwt39+Yh6DHLAHyJ73loJ/4V8AHpvSPKWh8fO9fLxdKh0XIXOQC+KIIC20Kjgs5EncfYfO41yac2XZk7ERwq3gbCVnm4g9irwUxWFWhUpFwgXJeGHsdOrnE9bipBVPAKHjo/Bt432h4OVEKMJ8KCLJuzXISAMgrrUImeRyag31KKUACDdjXAkGut/fS0noj9jQqZjJYZSUsUaDWqBaNNlN10v/B71g9FfA=="
+          image: localhost:5000/users-app:latest
           name: users-app
           ports:
             - containerPort: 3000
               protocol: TCP
+      initContainers:
+        - name: wait-for-mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: rootpassword # or set from secret/env if required
+          command:
+            [
+              "sh",
+              "-c",
+              'until mysqladmin ping -h "$MYSQL_HOST" --silent; do echo "Waiting for MySQL..."; sleep 2; done',
+            ]
       restartPolicy: Always

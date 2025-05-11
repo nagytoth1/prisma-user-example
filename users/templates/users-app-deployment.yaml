@@ -1,13 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "users.fullname" . }}-users-app
+  name: users-app
   labels:
     io.kompose.service: users-app
   {{- include "users.labels" . | nindent 4 }}
-  annotations:
-    kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
-    kompose.version: 1.35.0 (9532ceef3)
 spec:
   replicas: {{ .Values.usersApp.replicas }}
   selector:
@@ -19,9 +16,6 @@ spec:
       labels:
         io.kompose.service: users-app
       {{- include "users.selectorLabels" . | nindent 8 }}
-      annotations:
-        kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
-        kompose.version: 1.35.0 (9532ceef3)
     spec:
       containers:
       - env:
@@ -37,10 +31,30 @@ spec:
           value: {{ quote .Values.usersApp.usersApp.env.jwtSecret }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: localhost:5000/users-app:latest
+        image: {{ .Values.usersApp.usersApp.image.repository }}:{{ .Values.usersApp.usersApp.image.tag
+          | default .Chart.AppVersion }}
         name: users-app
         ports:
         - containerPort: 3000
           protocol: TCP
+        resources: {}
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - until mysqladmin ping -h "$MYSQL_HOST" --silent; do echo "Waiting for MySQL...";
+          sleep 2; done
+        env:
+        - name: MYSQL_HOST
+          value: {{ quote .Values.usersApp.waitForMysql.env.mysqlHost }}
+        - name: MYSQL_USER
+          value: {{ quote .Values.usersApp.waitForMysql.env.mysqlUser }}
+        - name: MYSQL_PASSWORD
+          value: {{ quote .Values.usersApp.waitForMysql.env.mysqlPassword }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.usersApp.waitForMysql.image.repository }}:{{ .Values.usersApp.waitForMysql.image.tag
+          | default .Chart.AppVersion }}
+        name: wait-for-mysql
         resources: {}
       restartPolicy: Always
