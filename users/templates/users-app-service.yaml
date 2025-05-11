@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "users.fullname" . }}-users-app
+  labels:
+    io.kompose.service: users-app
+  {{- include "users.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
+    kompose.version: 1.35.0 (9532ceef3)
+spec:
+  type: {{ .Values.usersApp.type }}
+  selector:
+    io.kompose.service: users-app
+    {{- include "users.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.usersApp.ports | toYaml | nindent 2 }}

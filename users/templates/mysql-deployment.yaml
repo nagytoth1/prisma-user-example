@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "users.fullname" . }}-mysql
+  labels:
+    io.kompose.service: mysql
+  {{- include "users.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
+    kompose.version: 1.35.0 (9532ceef3)
+spec:
+  replicas: {{ .Values.mysql.replicas }}
+  strategy:
+    type: {{ .Values.mysql.strategy.type | quote }}
+  selector:
+    matchLabels:
+      io.kompose.service: mysql
+    {{- include "users.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: mysql
+      {{- include "users.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
+        kompose.version: 1.35.0 (9532ceef3)
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_DATABASE
+          value: {{ quote .Values.mysql.mysql.env.mysqlDatabase }}
+        - name: MYSQL_PASSWORD
+          value: {{ quote .Values.mysql.mysql.env.mysqlPassword }}
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ quote .Values.mysql.mysql.env.mysqlRootPassword }}
+        - name: MYSQL_USER
+          value: {{ quote .Values.mysql.mysql.env.mysqlUser }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.mysql.mysql.image.repository }}:{{ .Values.mysql.mysql.image.tag
+          | default .Chart.AppVersion }}
+        name: mysql
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-data
+      restartPolicy: Always
+      volumes:
+      - name: mysql-data
+        persistentVolumeClaim:
+          claimName: {{ include "users.fullname" . }}-mysql-data

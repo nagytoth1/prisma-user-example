@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "users.fullname" . }}-users-app
+  labels:
+    io.kompose.service: users-app
+  {{- include "users.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
+    kompose.version: 1.35.0 (9532ceef3)
+spec:
+  replicas: {{ .Values.usersApp.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: users-app
+    {{- include "users.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: users-app
+      {{- include "users.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yaml -o kubernetes
+        kompose.version: 1.35.0 (9532ceef3)
+    spec:
+      containers:
+      - env:
+        - name: BACKEND_PORT
+          value: {{ quote .Values.usersApp.usersApp.env.backendPort }}
+        - name: DATABASE_URL
+          value: {{ quote .Values.usersApp.usersApp.env.databaseUrl }}
+        - name: DEFAULT_PASSWORD
+          value: {{ quote .Values.usersApp.usersApp.env.defaultPassword }}
+        - name: DEFAULT_USER
+          value: {{ quote .Values.usersApp.usersApp.env.defaultUser }}
+        - name: JWT_SECRET
+          value: {{ quote .Values.usersApp.usersApp.env.jwtSecret }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: localhost:5000/users-app:latest
+        name: users-app
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources: {}
+      restartPolicy: Always

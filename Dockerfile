@@ -29,8 +29,5 @@ COPY --from=builder /app/dist ./dist/
 # copy everything else that changes more frequently
 COPY backend/ .
 
-# generate Prisma client (because schema.prisma can also change)
-RUN npx prisma generate
-
 # push database to defined mysql server and start the backend
-ENTRYPOINT [ "/bin/sh", "-c", "npx prisma migrate deploy && npm run start-prod" ]
+ENTRYPOINT [ "./entrypoint.sh" ]

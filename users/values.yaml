@@ -1,0 +1,39 @@
+kubernetesClusterDomain: cluster.local
+mysql:
+  mysql:
+    env:
+      mysqlDatabase: userdb
+      mysqlPassword: mypassword
+      mysqlRootPassword: rootpassword
+      mysqlUser: myuser
+    image:
+      repository: mysql
+      tag: "5.7"
+  ports:
+  - name: "3306"
+    port: 3306
+    targetPort: 3306
+  replicas: 1
+  strategy:
+    type: Recreate
+  type: ClusterIP
+pvc:
+  mysqlData:
+    storageRequest: 100Mi
+usersApp:
+  ports:
+  - name: "3000"
+    port: 3000
+    targetPort: 3000
+  replicas: 1
+  type: ClusterIP
+  usersApp:
+    env:
+      backendPort: "3000"
+      databaseUrl: mysql://myuser:mypassword@mysql:3306/userdb
+      defaultPassword: root
+      defaultUser: root
+      jwtSecret: '"jSI4ldmUR0Wag9MEJlmbSpqslrfT8NquO7sxmVVc4URR95o52wHyyduZMkLz3wojiH6+99LZyg24vTkPFKZm4Z2/tNceJmCD7F24exW+WgqIMtRqwc3Cdwt39+Yh6DHLAHyJ73loJ/4V8AHpvSPKWh8fO9fLxdKh0XIXOQC+KIIC20Kjgs5EncfYfO41yac2XZk7ERwq3gbCVnm4g9irwUxWFWhUpFwgXJeGHsdOrnE9bipBVPAKHjo/Bt432h4OVEKMJ8KCLJuzXISAMgrrUImeRyag31KKUACDdjXAkGut/fS0noj9jQqZjJYZSUsUaDWqBaNNlN10v/B71g9FfA=="'
+    image:
+      repository: users-app
+      tag: latest
