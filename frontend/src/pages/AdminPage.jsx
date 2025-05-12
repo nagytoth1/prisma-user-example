@@ -3,14 +3,13 @@ import axios from "axios";
 import { useAuth } from "../hooks/AuthProvider";
 
 function AdminPage(properties) {
-  const { backend } = properties;
   const [users, setUsers] = useState([]);
   const [usernameInput, setUsernameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const auth = useAuth();
   const fetchUsers = async () => {
     await axios
-      .get(`${backend}/users/filter`)
+      .get("/users/filter")
       .then((res) => {
         setUsers(res.data); // Assuming setUsers is defined in your component state
       })
@@ -29,7 +28,7 @@ function AdminPage(properties) {
 
   const deleteUser = async (userID) => {
     await axios
-      .delete(`${backend}/users/${userID}`)
+      .delete(`/users/${userID}`)
       .then((res) => {
         console.debug(res.data);
       })
@@ -49,7 +48,7 @@ function AdminPage(properties) {
 
   const createUser = async () => {
     await axios
-      .post(`${backend}/users`, {
+      .post("/users", {
         name: usernameInput,
         email: emailInput,
       })
@@ -72,7 +71,7 @@ function AdminPage(properties) {
 
   const updateUser = async (userID) => {
     await axios
-      .put(`${backend}/users/${userID}`, {
+      .put(`/users/${userID}`, {
         name: usernameInput,
         email: emailInput,
       })

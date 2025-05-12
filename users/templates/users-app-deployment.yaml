@@ -58,3 +58,4 @@ spec:
         name: wait-for-mysql
         resources: {}
       restartPolicy: Always
+      imagePullPolicy: Always

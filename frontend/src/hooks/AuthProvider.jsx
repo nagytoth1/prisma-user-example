@@ -13,7 +13,7 @@ const AuthenticationContext = createContext();
  * @returns
  */
 const AuthProvider = (properties) => {
-  const { children, backend } = properties;
+  const { children } = properties;
   const [user, setUser] = useState(null);
   const [cookies, setCookie, removeCookies] = useCookies(["auth_token"]);
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const AuthProvider = (properties) => {
   const loginAction = async (data) => {
     try {
       // we need /auth/login endpoint
-      const res = await axios.post(`${backend}/auth/login`, data, {
+      const res = await axios.post("/auth/login", data, {
         withCredentials: true,
       });
       setUser(res.data.user);
